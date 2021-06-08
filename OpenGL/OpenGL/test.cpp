@@ -58,7 +58,7 @@ void myDisplay_circle() {
 	
 	// 0 radian부터 2파이 radian ==> 즉, 0~360도까지, 파이/30 = 180/30 = 6도 간격으로 점 찍기 => 정확히는 점 61개 찍힘 (마지막 겹쳐서)
 	for (angle = 0.0; angle <= 2.0 * Pi; angle += Pi / 30.0) {
-		glVertex3f(0.5 * cos(angle), 0.5 * sin(angle), 0.0);
+		glVertex3f(0.5 * cos(angle), 0.5 * sin(angle), 0.0); //(x, y, z) 3d 공간상의 점 하나 찍기
 	}
 	glEnd(); // 없으면 그냥 흰 창. 아무것도 안그려짐
 	// 여기까지 중요한 부분
@@ -76,7 +76,7 @@ void myDisplay_teapot() {
 }
 
 void reshape(int w, int h) {
-	glLoadIdentity();
+	glLoadIdentity(); // 행렬을 단위행렬로 초기화 (두번째부터는 첫번째 물체의 변환행렬이 남아있기 때문에)
 	glViewport(0, 0, w, h); // 윈도우 크기(w, h)까지 그림을 그리는 영역(viewport)으로 지정
 	gluOrtho2D(0.0, 1000, 0.0, 1000); // x축, y축 창의 맨 끝 범위가 0~100이라는 것을 알려줌 => Q. 1000으로 바꾸면? -> 전체 범위가 1000인데 네모 크기는 30~50이므로 작게 출력
 }
@@ -89,14 +89,16 @@ void display_rect(void) {
 }
 
 /*
+cf. GLUT : 그래픽과는 거의 상관 x. 창 등 그래픽을 그리기 위한 껍데기를 만드는 것
+
 // 1. 중앙쪽 빨간 네모
 void main(int argc, char **argv) {
-	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
-	glutCreateWindow("example");
-	glutReshapeFunc(reshape); // glutReshapeFunc : 창을 마우스로 크기조절하다가 놨을 때 불리는 함수
-	glutDisplayFunc(display_rect); // glutDisplayFunc : 다른 창에 가려졌다가 다시 보여졌을 때 불리는 함수
-	glutMainLoop();
+	glutInit(&argc, argv); // window 시스템과 연결, 운영체제 관련 에러처리
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB); // 더블버퍼 사용 + 기본값 컬러 사용 (디스플레이 표면의 주요 특징 결정)
+	glutCreateWindow("example"); // 창 상단의 제목 지정
+	glutReshapeFunc(reshape); // glutReshapeFunc : 창을 마우스로 크기조절하다가 놨을 때 불리는 함수 (창 크기 변경 시 호출되는 콜백 함수)
+	glutDisplayFunc(display_rect); // glutDisplayFunc : 다른 창에 가려졌다가 다시 보여졌을 때 불리는 함수 (화면에 그릴 때 호출되는 콜백 함수)
+	glutMainLoop(); // 끊임없이 메시지큐 감시하며 메시지 발생시마다 대응되는 콜백함수 호출
 }
 
 
